@@ -5,6 +5,16 @@
 # terms of the Do What The Fuck You Want To Public License, Version 2,
 # as published by Sam Hocevar. See the COPYING.WTFPL file for more details.
 
+_map()
+{
+  local fun=$1
+  shift
+
+  for e in "$@"; do
+    echo "\"$(eval $fun $e)\""
+  done
+}
+
 map()
 {
   local fun=$1
@@ -12,19 +22,26 @@ map()
 
   case $# in
     0)
-      for e in $(cat); do
-        echo "\"$(eval $fun $e)\""
-      done
-      ;;
-    1)
-      eval "map $fun $(echo $@)"
+      _map "$fun" $(cat)
       ;;
     *)
-      for e in "$@"; do
-        echo "\"$(eval $fun $e)\""
-      done
+      _map "$fun" "$@"
       ;;
   esac
+}
+
+_reduce()
+{
+  local fun=$1
+  local acc=$2
+  shift
+  shift
+
+  for e in "$@"; do
+    acc="\"$(eval "$fun $e $acc")\""
+  done
+
+  echo "$acc"
 }
 
 reduce(){
@@ -35,21 +52,13 @@ reduce(){
 
   case $# in
     0)
-      for e in $(cat); do
-        acc=$(eval "$fun '$e' '$acc'")
-      done
-
-      echo "$acc"
+      _reduce "$fun" "'$acc'" $(cat)
       ;;
     1)
-      eval "$fun '$1' '$acc'"
+      _reduce "$fun" "'$acc'" "$1"
       ;;
     *)
-      for e in "$@"; do
-        acc=$(eval "$fun '$e' '$acc'")
-      done
-
-      echo "$acc"
+      _reduce "$fun" "'$acc'" "$@"
       ;;
   esac
 }
