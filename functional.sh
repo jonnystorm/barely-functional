@@ -68,21 +68,7 @@ elem()
   local index=$1
   shift
 
-  case $index in
-    [1-9])
-      eval "echo \"\$$index\""
-      ;;
-    [1-9][0-9])
-      eval "echo \"\$$index\""
-      ;;
-    [1-9][0-9][0-9])
-      eval "echo \"\$$index\""
-      ;;
-    [1-9][0-9][0-9][0-9])
-      eval "echo \"\$$index\""
-      ;;
-    [1-9][0-9][0-9][0-9][0-9])
-      eval "echo \"\$$index\""
-      ;;
-  esac
+  if [[ "$index" =~ [1-9][0-9]?[0-9]?[0-9]?[0-9]? ]]; then
+    eval "echo \"\$$index\""
+  fi
 }
