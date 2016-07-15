@@ -5,7 +5,7 @@ Curiously robust<sup>1</sup> functional<sup>2</sup> implementations for BASH.
 
 <sup>1</sup> read, "hazardous"
 
-<sup>2</sup> read, "stateful, imperative"
+<sup>2</sup> read, "stateful, imperative, pretend functional"
 
 ## Usage
 
