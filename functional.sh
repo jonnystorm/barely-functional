@@ -1,6 +1,6 @@
 # functional.sh - Curiously robust functional implementations for BASH
 #
-# Copyright © 2016 Jonathan Storm <the.jonathan.storm@gmail.com>
+# Copyright © 2017 Jonathan Storm <jds@idio.link>
 # This work is free. You can redistribute it and/or modify it under the
 # terms of the Do What The Fuck You Want To Public License, Version 2,
 # as published by Sam Hocevar. See the COPYING.WTFPL file for more details.
@@ -71,4 +71,29 @@ elem()
   if [[ "$index" =~ [1-9][0-9]?[0-9]?[0-9]?[0-9]? ]]; then
     eval "echo \"\$$index\""
   fi
+}
+
+_filter()
+{
+  local fun=$1
+  local value=$2
+  local acc=$3
+
+  (eval "$fun $value") &>/dev/null
+
+  if [ $? -eq 0 ]; then
+    echo "$value"
+    echo "$acc"
+
+  else
+    echo "$acc"
+  fi
+}
+
+filter()
+{
+  local fun=$1
+  shift
+
+  reduce "" "_filter $fun" "$@"
 }
